@@ -1,7 +1,22 @@
 require 'net/http'
 
-
 namespace :crawl do
+
+	task :crawl_stores_lat_lng => :environment do
+
+		url_string = URI.escape('http://maps.googleapis.com/maps/api/geocode/json?address=台中市大里區益民路一段58號&sensor=true')
+		url = URI.parse(url_string)
+		req = Net::HTTP::Get.new(url.to_s)
+		res = Net::HTTP.start(url.host, url.port) {|http|
+			http.request(req)
+		}
+		content = res.body
+		lat = JSON.parse(content)['results'][0]['geometry']['location']['lat']
+		lng = JSON.parse(content)['results'][0]['geometry']['location']['lng']
+
+		print lat.to_s + " " + lng.to_s
+
+	end
 
 	task :crawl_kilong_stores => :environment do
 
